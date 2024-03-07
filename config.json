@@ -1,6 +1,0 @@
-// config.js
-const config = {
-    apiKey: "YOUR_APAIzaSyD3_W1VvDbcrfxfQCxEfoSZYUz-SxAEfVoI_KEY",
-    apiSecret: "your-api-secret",
-    otherConfig: "some-value",
-  };

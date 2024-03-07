@@ -1,4 +1,3 @@
-// Your JavaScript code goes here
 function runPageSpeedTest() {
     const urlInput = document.getElementById('urlInput').value;
     const resultsDiv = document.getElementById('results');

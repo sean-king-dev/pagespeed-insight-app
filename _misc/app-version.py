@@ -1,10 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 import requests
 import json
-from config import Config
 
 app = Flask(__name__)
-config = Config()
 
 @app.route('/')
 def index():
@@ -17,7 +15,7 @@ def get_pagespeed_data():
     if not url:
         return jsonify({'error': 'Please provide a URL'}), 400
 
-    api_key = config.API_KEY
+    api_key = 'zaSyD3_W1VvDbcrfxfQCxEfoSZYUz-SxAEfVoI'
     base_url = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed'
 
     params = {

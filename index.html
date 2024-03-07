@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PageSpeed Insights</title>
+</head>
+<body>
+    <h1>PageSpeed Insights</h1>
+    
+    <label for="urlInput">Enter URL:</label>
+    <input type="text" id="urlInput" placeholder="https://example.com">
+    <button onclick="runPageSpeedTest()">Run Test</button>
+
+    <div id="results">
+        <!-- Results will be displayed here -->
+    </div>
+
+    <script>
+        function runPageSpeedTest() {
+            const urlInput = document.getElementById('urlInput').value;
+            const resultsDiv = document.getElementById('results');
+            
+            // Check if URL is provided
+            if (!urlInput) {
+                resultsDiv.innerHTML = "<p>Please enter a valid URL.</p>";
+                return;
+            }
+
+            // Clear previous results
+            resultsDiv.innerHTML = "<p>Loading...</p>";
+
+            // Make API request
+            fetch(`/api/pagespeed?url=${encodeURIComponent(urlInput)}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Display results
+                    const score = data.lighthouseResult.categories.performance.score;
+                    const metrics = data.lighthouseResult.audits;
+                    
+                    let resultsHTML = `<p>Overall Score: ${score}</p>`;
+                    resultsHTML += "<h2>Metrics:</h2>";
+
+                    // Display individual metrics
+                    for (const metric in metrics) {
+                        const metricValue = metrics[metric].numericValue;
+                        resultsHTML += `<p>${metric}: ${metricValue}</p>`;
+                    }
+
+                    resultsDiv.innerHTML = resultsHTML;
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    resultsDiv.innerHTML = "<p>Error fetching data. Please try again.</p>";
+                });
+        }
+    </script>
+</body>
+</html>

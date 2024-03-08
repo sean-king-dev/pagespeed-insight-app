@@ -84,14 +84,22 @@
                     // Display individual metrics
                     for (const metric in data.lighthouseResult.audits) {
                         const metricValue = data.lighthouseResult.audits[metric].numericValue;
-                        if (metricValue !== undefined && !isNaN(metricValue)) {
-                            const formattedValue = formatMetric(metric, metricValue);
-                            resultsHTML += `<div class="result">
-                                                <div class="metric">
-                                                    <strong>${metric}</strong>: ${formattedValue}
-                                                </div>
-                                            </div>`;
+                        let formattedValue;
+
+                        // Format metric values based on their units
+                        if (metric.includes("bytes")) {
+                            formattedValue = formatBytes(metricValue);
+                        } else if (metric.includes("time")) {
+                            formattedValue = formatTime(metricValue);
+                        } else {
+                            formattedValue = metricValue !== undefined ? metricValue : 'N/A';
                         }
+
+                        resultsHTML += `<div class="result">
+                                            <div class="metric">
+                                                <strong>${metric}</strong>: ${formattedValue}
+                                            </div>
+                                        </div>`;
                     }
 
                     // Display results
@@ -103,24 +111,6 @@
                 });
         }
 
-        // Function to format metric values based on their units
-        function formatMetric(metric, metricValue) {
-            if (typeof metricValue === 'number') {
-                let sizeInfo = '';
-
-                if (metric.includes('bytes')) {
-                    sizeInfo = `(${formatBytes(metricValue)})`;
-                }
-
-                if (metric.includes('time')) {
-                    return (metricValue < 1000) ? `${metricValue.toFixed(2)} ms ${sizeInfo}` : `${(metricValue / 1000).toFixed(2)} s ${sizeInfo}`;
-                } else {
-                    return metricValue.toFixed(2) + ' ' + sizeInfo;
-                }
-            }
-            return 'N/A';
-        }
-
         // Function to format bytes to KB or MB
         function formatBytes(bytes) {
             if (bytes >= 1048576) {
@@ -129,6 +119,15 @@
                 return (bytes / 1024).toFixed(2) + ' KB';
             } else {
                 return bytes + ' bytes';
+            }
+        }
+
+        // Function to format time to ms or s
+        function formatTime(time) {
+            if (time >= 1000) {
+                return (time / 1000).toFixed(2) + ' s';
+            } else {
+                return time + ' ms';
             }
         }
     </script>

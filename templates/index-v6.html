@@ -84,8 +84,8 @@
                     // Display individual metrics
                     for (const metric in data.lighthouseResult.audits) {
                         const metricValue = data.lighthouseResult.audits[metric].numericValue;
-                        if (metricValue !== undefined && !isNaN(metricValue)) {
-                            const formattedValue = formatMetric(metric, metricValue);
+                        const formattedValue = formatMetric(metricValue);
+                        if (formattedValue !== 'N/A') {
                             resultsHTML += `<div class="result">
                                                 <div class="metric">
                                                     <strong>${metric}</strong>: ${formattedValue}
@@ -104,32 +104,15 @@
         }
 
         // Function to format metric values based on their units
-        function formatMetric(metric, metricValue) {
+        function formatMetric(metricValue) {
             if (typeof metricValue === 'number') {
-                let sizeInfo = '';
-
-                if (metric.includes('bytes')) {
-                    sizeInfo = `(${formatBytes(metricValue)})`;
-                }
-
-                if (metric.includes('time')) {
-                    return (metricValue < 1000) ? `${metricValue.toFixed(2)} ms ${sizeInfo}` : `${(metricValue / 1000).toFixed(2)} s ${sizeInfo}`;
-                } else {
-                    return metricValue.toFixed(2) + ' ' + sizeInfo;
+                if (metricValue < 1000) {
+                    return metricValue + ' ms';
+                } else if (metricValue >= 1000) {
+                    return (metricValue / 1000).toFixed(2) + ' s';
                 }
             }
-            return 'N/A';
-        }
-
-        // Function to format bytes to KB or MB
-        function formatBytes(bytes) {
-            if (bytes >= 1048576) {
-                return (bytes / 1048576).toFixed(2) + ' MB';
-            } else if (bytes >= 1024) {
-                return (bytes / 1024).toFixed(2) + ' KB';
-            } else {
-                return bytes + ' bytes';
-            }
+            return metricValue !== undefined ? metricValue : 'N/A';
         }
     </script>
 </body>

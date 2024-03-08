@@ -27,19 +27,6 @@
         <option value="no-throttle">No Throttling</option>
     </select>
 
-    <!-- Dropdown for popular locations -->
-    <label for="locationSelect">Select Location:</label>
-    <select id="locationSelect">
-        <option value="us-east">US East</option>
-        <option value="us-west">US West</option>
-        <option value="eu-central">EU Central</option>
-        <option value="asia-pacific">Asia Pacific</option>
-        <option value="london">London</option>
-        <option value="ireland">Ireland</option>
-        <option value="amsterdam">Amsterdam</option>
-        <option value="germany">Germany</option>
-    </select>
-
     <button onclick="runPageSpeedTest()">Run Test</button>
 
     <div id="results">
@@ -51,7 +38,6 @@
             const urlInput = document.getElementById('urlInput').value;
             const deviceSelect = document.getElementById('deviceSelect').value;
             const throttleSelect = document.getElementById('throttleSelect').value;
-            const locationSelect = document.getElementById('locationSelect').value;
             const resultsDiv = document.getElementById('results');
 
             // Check if URL is provided
@@ -69,29 +55,24 @@
 
             // Display date and time
             let resultsHTML = `<p>Test Run on: ${dateTimeString}</p>`;
-            resultsHTML += `<p>Location: ${locationSelect}</p>`;
 
-            // Make API request with device, throttling, and location parameters
-            const apiUrl = `/api/pagespeed?url=${encodeURIComponent(urlInput)}&device=${deviceSelect}&throttle=${throttleSelect}&location=${locationSelect}`;
+            // Make API request with device and throttling parameters
+            const apiUrl = `/api/pagespeed?url=${encodeURIComponent(urlInput)}&device=${deviceSelect}&throttle=${throttleSelect}`;
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
-                    // Display overall score as percentage
-                    const score = data.lighthouseResult.categories.performance.score * 100;
-                    resultsHTML += `<p>Overall Score: ${score.toFixed(2)}%</p>`;
+                    // Display overall score
+                    const score = data.lighthouseResult.categories.performance.score;
+                    resultsHTML += `<p>Overall Score: ${score}</p>`;
                     resultsHTML += "<h2>Metrics:</h2>";
-
                     // Display individual metrics
                     for (const metric in data.lighthouseResult.audits) {
                         const metricValue = data.lighthouseResult.audits[metric].numericValue;
-                        if (metricValue !== undefined && !isNaN(metricValue)) {
-                            const formattedValue = formatMetric(metric, metricValue);
-                            resultsHTML += `<div class="result">
-                                                <div class="metric">
-                                                    <strong>${metric}</strong>: ${formattedValue}
-                                                </div>
-                                            </div>`;
-                        }
+                        resultsHTML += `<div class="result">
+                                            <div class="metric">
+                                                <strong>${metric}</strong>: ${metricValue !== undefined ? metricValue : 'N/A'}
+                                            </div>
+                                        </div>`;
                     }
 
                     // Display results
@@ -101,35 +82,6 @@
                     console.error("Error fetching data:", error);
                     resultsDiv.innerHTML = "<p>Error fetching data. Please try again.</p>";
                 });
-        }
-
-        // Function to format metric values based on their units
-        function formatMetric(metric, metricValue) {
-            if (typeof metricValue === 'number') {
-                let sizeInfo = '';
-
-                if (metric.includes('bytes')) {
-                    sizeInfo = `(${formatBytes(metricValue)})`;
-                }
-
-                if (metric.includes('time')) {
-                    return (metricValue < 1000) ? `${metricValue.toFixed(2)} ms ${sizeInfo}` : `${(metricValue / 1000).toFixed(2)} s ${sizeInfo}`;
-                } else {
-                    return metricValue.toFixed(2) + ' ' + sizeInfo;
-                }
-            }
-            return 'N/A';
-        }
-
-        // Function to format bytes to KB or MB
-        function formatBytes(bytes) {
-            if (bytes >= 1048576) {
-                return (bytes / 1048576).toFixed(2) + ' MB';
-            } else if (bytes >= 1024) {
-                return (bytes / 1024).toFixed(2) + ' KB';
-            } else {
-                return bytes + ' bytes';
-            }
         }
     </script>
 </body>

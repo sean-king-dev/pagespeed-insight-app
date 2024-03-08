@@ -2,10 +2,8 @@ from flask import Flask, render_template, request, jsonify
 import requests
 import json
 from config import Config
-from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
 config = Config()
 
 @app.route('/')
@@ -33,4 +31,4 @@ def get_pagespeed_data():
     return jsonify(data)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')  # Run on host 0.0.0.0 to make it accessible externally
+    app.run(debug=True)

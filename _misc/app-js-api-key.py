@@ -1,12 +1,20 @@
 from flask import Flask, render_template, request, jsonify
 import requests
 import json
-from config import Config
-from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
-config = Config()
+
+# Load API key from config.json
+try:
+    with open('config.json') as config_file:
+        config_data = json.load(config_file)
+        api_key = config_data.get('api_key')
+except FileNotFoundError:
+    print("Error: Configuration file 'config.json' not found.")
+    exit(1)
+except json.JSONDecodeError:
+    print("Error: Invalid JSON format in 'config.json'.")
+    exit(1)
 
 @app.route('/')
 def index():
@@ -19,7 +27,6 @@ def get_pagespeed_data():
     if not url:
         return jsonify({'error': 'Please provide a URL'}), 400
 
-    api_key = config.API_KEY
     base_url = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed'
 
     params = {
@@ -33,4 +40,4 @@ def get_pagespeed_data():
     return jsonify(data)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')  # Run on host 0.0.0.0 to make it accessible externally
+    app.run(debug=True)

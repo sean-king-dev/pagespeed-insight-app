@@ -1,91 +1,110 @@
-// Your JavaScript code goes here
 function runPageSpeedTest() {
     const urlInput = document.getElementById('urlInput').value;
+    const deviceSelect = document.getElementById('deviceSelect').value;
+    const throttleSelect = document.getElementById('throttleSelect').value;
     const resultsDiv = document.getElementById('results');
-    const loadingDiv = document.querySelector('.loading');
 
+    // Check if URL is provided
     if (!urlInput) {
         resultsDiv.innerHTML = "<p>Please enter a valid URL.</p>";
         return;
     }
 
-    // Show loading animation
-    loadingDiv.style.display = 'inline-block';
-
     // Clear previous results
     resultsDiv.innerHTML = "<p>Loading...</p>";
 
-    // Make API request
+    // Get current date and time
+    const currentDate = new Date();
+    const dateTimeString = currentDate.toLocaleString();
 
-    // v3
-    fetch(`/api/pagespeed?url=${encodeURIComponent(urlInput)}`)
-    .then(response => response.json())
-    .then(data => {
-        const score = data.lighthouseResult.categories.performance.score;
-        const audits = data.lighthouseResult.audits;
+    // Display date and time
+    let resultsHTML = `<p>Test Run on: ${dateTimeString}</p>`;
 
-        let resultsHTML = `<p>Overall Score: ${score}</p>`;
-        resultsHTML += "<h2>Metrics:</h2>";
+    // Make API request with device and throttling parameters
+    const apiUrl = `/api/pagespeed?url=${encodeURIComponent(urlInput)}&device=${deviceSelect}&throttle=${throttleSelect}`;
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            // Display overall score
+            const score = data.lighthouseResult.categories.performance.score;
+            resultsHTML += `<p>Overall Score: ${score}</p>`;
 
-        // Define variables for specific metrics
-        const bootupTime = audits['bootup-time'].numericValue;
-        const criticalRequestChains = audits['critical-request-chains'].numericValue;
-        const cumulativeLayoutShift = audits['cumulative-layout-shift'].numericValue;
-        const diagnostics = audits['diagnostics'].numericValue;
-        const domSize = audits['dom-size'].numericValue;
-        const duplicatedJavascript = audits['duplicated-javascript'].numericValue;
-        const efficientAnimatedContent = audits['efficient-animated-content'].numericValue;
-        const finalScreenshot = audits['final-screenshot'].numericValue;
+            // Display individual metrics
+            for (const metric in data.lighthouseResult.audits) {
+                const metricValue = data.lighthouseResult.audits[metric].numericValue;
+                resultsHTML += `<div class="result">
+                                    <div class="metric">
+                                        <strong>${metric}</strong>: ${metricValue !== undefined ? metricValue : 'N/A'}
+                                    </div>
+                                </div>`;
+            }
 
-        // Display specific metrics if available
-        if (bootupTime !== undefined) {
-            resultsHTML += `<p>Bootup Time: ${bootupTime} seconds</p>`;
-        }
-
-        if (criticalRequestChains !== undefined) {
-            resultsHTML += `<p>Critical Request Chains: ${criticalRequestChains} seconds</p>`;
-        }
-
-        if (cumulativeLayoutShift !== undefined) {
-            resultsHTML += `<p>Cumulative Layout Shift: ${cumulativeLayoutShift}</p>`;
-        }
-
-        if (diagnostics !== undefined) {
-            resultsHTML += `<p>Diagnostics: ${diagnostics}</p>`;
-        }
-
-        if (domSize !== undefined) {
-            resultsHTML += `<p>DOM Size: ${domSize}</p>`;
-        }
-
-        if (duplicatedJavascript !== undefined) {
-            resultsHTML += `<p>Duplicated Javascript: ${duplicatedJavascript}</p>`;
-        }
-
-        if (efficientAnimatedContent !== undefined) {
-            resultsHTML += `<p>Efficient Animated Content: ${efficientAnimatedContent}</p>`;
-        }
-
-        if (finalScreenshot !== undefined) {
-            resultsHTML += `<p>Final Screenshot: ${finalScreenshot}</p>`;
-        }
-
-        // Display other metrics with undefined values
-        const undefinedMetrics = {
-            // Add more metrics as needed
-        };
-
-        // Display metrics with undefined values
-        Object.keys(undefinedMetrics).forEach(metricKey => {
-            const metricValue = undefinedMetrics[metricKey];
-            resultsHTML += `<p>${metricKey}: ${metricValue !== undefined ? metricValue : 'N/A'}</p>`;
+            // Display results
+            resultsDiv.innerHTML = resultsHTML;
+        })
+        .catch(error => {
+            console.error("Error fetching data:", error);
+            resultsDiv.innerHTML = "<p>Error fetching data. Please try again.</p>";
         });
-
-        resultsDiv.innerHTML = resultsHTML;
-    })
-    .catch(error => {
-        console.error("Error fetching data:", error);
-        resultsDiv.innerHTML = "<p>Error fetching data. Please try again.</p>";
-    });
-
 }
+
+
+
+// function runPageSpeedTest() {
+//     const urlInput = document.getElementById('urlInput').value;
+//     const deviceSelect = document.getElementById('deviceSelect').value;
+//     const throttleInput = document.getElementById('throttleInput').value;
+//     const resultsDiv = document.getElementById('results');
+//     const loadingDiv = document.querySelector('.loading');
+
+//     if (!urlInput) {
+//         resultsDiv.innerHTML = "<p>Please enter a valid URL.</p>";
+//         return;
+//     }
+
+//     // Show loading animation
+//     loadingDiv.style.display = 'inline-block';
+
+//     // Clear previous results
+//     resultsDiv.innerHTML = "<p>Loading...</p>";
+
+//     // Format the current date and time
+//     const dateTime = new Date().toLocaleString();
+
+//     // Make API request with emulated device and throttling parameters
+//     const apiUrl = `/api/pagespeed?url=${encodeURIComponent(urlInput)}&device=${deviceSelect}&throttle=${throttleInput}`;
+//     fetch(apiUrl)
+//         .then(response => response.json())
+//         .then(data => {
+//             // Hide loading animation
+//             loadingDiv.style.display = 'none';
+
+//             // Display results
+//             const score = data.lighthouseResult.categories.performance.score;
+//             const metrics = data.lighthouseResult.audits;
+
+//             let resultsHTML = `<p>Overall Score: ${score}</p>`;
+//             resultsHTML += `<p>Emulated Device: ${deviceSelect}</p>`;
+//             resultsHTML += `<p>Throttle: ${throttleInput} ms</p>`;
+//             resultsHTML += `<p>Date/Time: ${dateTime}</p>`;
+//             resultsHTML += "<h2>Metrics:</h2>";
+
+//             // Display individual metrics
+//             for (const metric in metrics) {
+//                 const metricValue = metrics[metric].numericValue;
+//                 resultsHTML += `<div class="result">
+//                                     <div class="metric">
+//                                         <strong>${metric}</strong>: ${metricValue !== undefined ? metricValue : 'N/A'}
+//                                     </div>
+//                                 </div>`;
+//             }
+
+//             resultsDiv.innerHTML = resultsHTML;
+//         })
+//         .catch(error => {
+//             console.error("Error fetching data:", error);
+//             // Hide loading animation
+//             loadingDiv.style.display = 'none';
+//             resultsDiv.innerHTML = "<p>Error fetching data. Please try again.</p>";
+//         });
+// }

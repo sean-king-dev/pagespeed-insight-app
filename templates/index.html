@@ -64,7 +64,7 @@
                     // Display overall score
                     const score = data.lighthouseResult.categories.performance.score;
                     resultsHTML += `<p>Overall Score: ${score}</p>`;
-
+                    resultsHTML += "<h2>Metrics:</h2>";
                     // Display individual metrics
                     for (const metric in data.lighthouseResult.audits) {
                         const metricValue = data.lighthouseResult.audits[metric].numericValue;

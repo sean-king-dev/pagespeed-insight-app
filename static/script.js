@@ -88,4 +88,8 @@ function runPageSpeedTest() {
         resultsDiv.innerHTML = "<p>Error fetching data. Please try again.</p>";
     });
 
+
+    // logging
+    logging.basicConfig(level=logging.DEBUG);
+
 }

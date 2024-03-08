@@ -15,17 +15,12 @@
 
     <label for="deviceSelect">Select Device:</label>
     <select id="deviceSelect">
-        <option value="mobile">Mobile</option>
         <option value="desktop">Desktop</option>
+        <option value="mobile">Mobile</option>
     </select>
 
-    <label for="throttleSelect">Select Throttling:</label>
-    <select id="throttleSelect">
-        <option value="fast">Fast</option>
-        <option value="medium">Medium</option>
-        <option value="slow">Slow</option>
-        <option value="no-throttle">No Throttling</option>
-    </select>
+    <label for="throttleInput">PageSpeed Throttling (ms):</label>
+    <input type="number" id="throttleInput" placeholder="0">
 
     <button onclick="runPageSpeedTest()">Run Test</button>
 
@@ -37,7 +32,7 @@
         function runPageSpeedTest() {
             const urlInput = document.getElementById('urlInput').value;
             const deviceSelect = document.getElementById('deviceSelect').value;
-            const throttleSelect = document.getElementById('throttleSelect').value;
+            const throttleInput = document.getElementById('throttleInput').value;
             const resultsDiv = document.getElementById('results');
 
             // Check if URL is provided
@@ -49,33 +44,24 @@
             // Clear previous results
             resultsDiv.innerHTML = "<p>Loading...</p>";
 
-            // Get current date and time
-            const currentDate = new Date();
-            const dateTimeString = currentDate.toLocaleString();
-
-            // Display date and time
-            let resultsHTML = `<p>Test Run on: ${dateTimeString}</p>`;
-
-            // Make API request with device and throttling parameters
-            const apiUrl = `/api/pagespeed?url=${encodeURIComponent(urlInput)}&device=${deviceSelect}&throttle=${throttleSelect}`;
+            // Make API request
+            const apiUrl = `/api/pagespeed?url=${encodeURIComponent(urlInput)}&device=${deviceSelect}&throttle=${throttleInput}`;
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
-                    // Display overall score
+                    // Display results
                     const score = data.lighthouseResult.categories.performance.score;
-                    resultsHTML += `<p>Overall Score: ${score}</p>`;
+                    const metrics = data.lighthouseResult.audits;
+
+                    let resultsHTML = `<p>Overall Score: ${score}</p>`;
+                    resultsHTML += "<h2>Metrics:</h2>";
 
                     // Display individual metrics
-                    for (const metric in data.lighthouseResult.audits) {
-                        const metricValue = data.lighthouseResult.audits[metric].numericValue;
-                        resultsHTML += `<div class="result">
-                                            <div class="metric">
-                                                <strong>${metric}</strong>: ${metricValue !== undefined ? metricValue : 'N/A'}
-                                            </div>
-                                        </div>`;
+                    for (const metric in metrics) {
+                        const metricValue = metrics[metric].numericValue;
+                        resultsHTML += `<p>${metric}: ${metricValue}</p>`;
                     }
 
-                    // Display results
                     resultsDiv.innerHTML = resultsHTML;
                 })
                 .catch(error => {

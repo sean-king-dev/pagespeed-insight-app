@@ -27,33 +27,13 @@ button {
 #results {
     margin-top: 20px;
     border: 1px solid red;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between; /* Adjust as needed */
-}
-
-p:first-of-type {
-    border: 2px solid grey;
-    width: calc(100% - 20px); /* 4 columns, adjust as needed */
-    margin: 10px;
-    min-height: 40px;
-    box-sizing: border-box;
-}
-
-h2 {
-    border: 2px solid lightcoral;
-    width: calc(100% - 20px);
-    min-height: 40px;
-    margin: 10px;
-    box-sizing: border-box;
+   display: flex;
 }
 
 p {
     border: 2px solid grey;
-    width: calc(25% - 20px); /* 4 columns, adjust as needed */
-    margin: 10px;
-    min-height: 50px;
-    box-sizing: border-box;
+    width: 200px;
+    min-height: 100px;
 }
 
 /* Add more styles as needed for the results section */
@@ -96,3 +76,4 @@ p {
     border-top: 3px solid transparent;
     animation: spin 1s linear infinite;
 }
+

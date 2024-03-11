@@ -30,7 +30,6 @@
         <option value="no-throttle">No Throttling</option>
     </select>
 
-    <!-- Dropdown for popular locations -->
     <label for="locationSelect">Select Location:</label>
     <select id="locationSelect">
         <option value="us-east">US East</option>
@@ -57,7 +56,6 @@
             const locationSelect = document.getElementById('locationSelect').value;
             const resultsDiv = document.getElementById('results');
 
-            // Check if URL is provided
             if (!urlInput) {
                 resultsDiv.innerHTML = "<p>Please enter a valid URL.</p>";
                 return;

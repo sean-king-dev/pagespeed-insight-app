@@ -4,6 +4,7 @@ import json
 from config import Config
 from flask_cors import CORS
 import csv
+import os  # Added import for os
 
 app = Flask(__name__)
 CORS(app)
@@ -51,20 +52,34 @@ def download_pagespeed_data():
     response = requests.get(base_url, params=params)
     data = json.loads(response.text)
 
+    # Convert the data to CSV format
     csv_data = convert_to_csv(data)
 
+    # Save the CSV data to a file
+    filename = f'{url}_pagespeed_data.csv'
+    filepath = os.path.join(app.root_path, 'downloads', filename)
+    with open(filepath, 'w', newline='') as csvfile:
+        csvfile.write(csv_data)
+
+    # Create a response with the CSV data
     response = Response(
         csv_data,
         content_type='text/csv',
-        headers={'Content-Disposition': f'attachment; filename={url}_pagespeed_data.csv'}
+        headers={'Content-Disposition': f'attachment; filename={filename}'}
     )
 
     return response
 
 def convert_to_csv(data):
+    # Extract relevant data from the JSON response and convert to CSV format
+    # Modify this function based on the structure of your PageSpeed API response
+    # For demonstration purposes, let's assume the data is a dictionary with 'field1' and 'field2'
     csv_data = 'field1,field2\n'
     csv_data += f'{data["field1"]},{data["field2"]}\n'
     return csv_data
 
 if __name__ == '__main__':
+    # Ensure the 'downloads' directory exists
+    os.makedirs(os.path.join(app.root_path, 'downloads'), exist_ok=True)
+    
     app.run(debug=True, host='0.0.0.0')

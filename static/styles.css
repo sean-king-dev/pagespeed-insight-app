@@ -26,22 +26,30 @@ button {
 
 #results {
     margin-top: 20px;
-    border: 1px solid red;
+    /* border: 1px solid red; */
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between; /* Adjust as needed */
 }
 
 p:first-of-type {
-    border: 2px solid grey;
-    width: calc(100% - 20px); /* 4 columns, adjust as needed */
+    border-bottom: 4px solid grey;
+    width: calc(25% - 20px); /* 4 columns, adjust as needed */
     margin: 10px;
     min-height: 40px;
     box-sizing: border-box;
 }
 
+p {
+    border-bottom: 4px solid purple;
+}
+
+p:last-of-type {
+    border-bottom: 4px solid coral;
+}
+
 h2 {
-    border: 2px solid lightcoral;
+    /* border: 2px solid lightcoral; */
     width: calc(100% - 20px);
     min-height: 40px;
     margin: 10px;
@@ -61,10 +69,10 @@ p {
 /* Add more styles as needed for the results section */
 
 .result {
-    border: 1px solid coral;
+    border: 1px solid lightslategray;
     margin: 10px;
     padding: 10px;
-    min-height: 50px;
+    /* min-height: 50px; */
     width: calc(25% - 20px); /* 4 columns, adjust as needed */
 }
 
@@ -78,7 +86,7 @@ p {
     }
 
     .result {
-        border: 1px solid coral;
+        border: 1px solid #ccc;
         margin: 10px;
         padding: 10px;
         min-width: calc(100% - 20px); /* 4 columns, adjust as needed */

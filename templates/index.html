@@ -30,6 +30,14 @@
         <option value="no-throttle">No Throttling</option>
     </select>
 
+    <label for="networkSelect">Select Network Type:</label>
+    <select id="networkSelect">
+      <option value="3g">3G</option>
+      <option value="4g">4G</option>
+      <option value="5g">5G</option>
+    </select>
+
+
     <label for="locationSelect">Select Location:</label>
     <select id="locationSelect">
         <option value="us-east">US East</option>
@@ -53,6 +61,7 @@
             const urlInput = document.getElementById('urlInput').value;
             const deviceSelect = document.getElementById('deviceSelect').value;
             const throttleSelect = document.getElementById('throttleSelect').value;
+            const networkSelect = document.getElementById('networkSelect').value;
             const locationSelect = document.getElementById('locationSelect').value;
             const resultsDiv = document.getElementById('results');
 
